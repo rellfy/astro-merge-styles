@@ -1,7 +1,7 @@
 {
   "name": "astro-merge-styles",
   "description": "Serve all stylesheets from all pages for SSR apps in Astro",
-  "version": "0.1.0",
+  "version": "0.0.1",
   "type": "module",
   "types": "./dist/index.d.ts",
   "author": "Lorenzo Fontoura <lorenzo@nioel.com>",
