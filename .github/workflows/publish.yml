@@ -6,6 +6,9 @@ env:
   CARGO_TERM_COLOR: always
 jobs:
   publish-npm:
+    permissions:
+      contents: read
+      id-token: write
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
