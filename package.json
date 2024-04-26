@@ -10,6 +10,7 @@
     "type": "git",
     "url": "git@github.com:rellfy/astro-merge-styles.git"
   },
+  "private": false,
   "keywords": [
     "astro-integration",
     "astro-component",
