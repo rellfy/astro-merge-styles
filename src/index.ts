@@ -1,4 +1,9 @@
-import type { AstroIntegration } from 'astro';
+import type {AstroIntegration} from 'astro';
+import {GlobOptions, globSync} from "glob";
+import fs from "fs";
+import {ViteDevServer} from "vite";
+
+let serverRef: ViteDevServer;
 
 export default function createPlugin(): AstroIntegration {
 	return {
@@ -21,6 +26,39 @@ export default function createPlugin(): AstroIntegration {
 						route.styles.push(...styles.styles);
 					}
 				}
+			},
+			"astro:server:setup": async ({ server }) => {
+				serverRef = server;
+				const options: GlobOptions = {
+					nodir: true,
+					root: server.config.root
+				};
+				const filePaths = globSync("/src/**/*", options)
+					.map(p => `${p}`)
+					.filter(p => {
+						return fs.lstatSync(p).isFile();
+					});
+				const modules = [];
+				for (const filePath of filePaths) {
+					try {
+						// const result = await server.ssrFetchModule(filePath);
+						// await server.warmupRequest("/info", { ssr: true });
+						// modules.push(new ModuleNode(filePath));
+						const module = await server.moduleGraph.ensureEntryFromUrl(filePath, true, true);
+						// await server.ssrLoadModule(filePath);
+					} catch (e) {
+						console.error("error loading module:", e);
+					}
+					// await server.moduleGraph.ensureEntryFromUrl(filePath);
+				}
+				// await getSortedPreloadedMatches({
+				// 	pipeline,
+				// 	matches: manifestData.routes,
+				// 	settings: pipeline.settings,
+				// });
+			},
+			"astro:server:start": () => {
+				console.log("resolved urls:", serverRef.resolvedUrls);
 			},
 		},
 	};
